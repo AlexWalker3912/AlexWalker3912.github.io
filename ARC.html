@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alex Walker — Builder</title>
+<meta name="description" content="Stanford ME. TIG welder. Building toward something that hasn't been built before.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --arc:#E8712A;
+  --alex:#4A9EDB;
+  --bg:#0A0A0A;
+  --surface:#111111;
+  --border:#1E1E1E;
+  --text:#F0EDE8;
+  --muted:#555550;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none}
+.cursor{position:fixed;width:8px;height:8px;background:var(--arc);border-radius:50%;pointer-events:none;z-index:9999;transition:transform 0.1s;mix-blend-mode:screen}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(232,113,42,0.4);border-radius:50%;pointer-events:none;z-index:9998;transition:all 0.12s ease}
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.6}
+.container{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 2rem}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:rgba(10,10,10,0.85);backdrop-filter:blur(12px)}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.15em;color:var(--text);text-decoration:none}
+.nav-logo span{color:var(--arc)}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s}
+.nav-links a:hover{color:var(--arc)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:8rem 2rem 4rem;position:relative;overflow:hidden}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--arc);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.8s 0.3s forwards}
+.hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(5rem,15vw,11rem);line-height:0.9;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.8s 0.5s forwards}
+.hero-name .alex{color:var(--text);display:block}
+.hero-name .arc-name{color:var(--arc);display:block;text-shadow:0 0 60px rgba(232,113,42,0.3)}
+.hero-sub{font-size:1rem;color:var(--muted);max-width:420px;line-height:1.7;opacity:0;animation:fadeUp 0.8s 0.7s forwards;font-weight:300}
+.hero-duality{position:absolute;right:2rem;top:50%;transform:translateY(-50%);font-family:'DM Mono',monospace;font-size:0.6rem;color:#1E1E1E;writing-mode:vertical-rl;letter-spacing:0.3em;text-transform:uppercase;opacity:0;animation:fadeIn 1.5s 1.2s forwards;transition:color 0.3s;user-select:none}
+.hero-duality:hover{color:var(--muted)}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;opacity:0;animation:fadeIn 2s 1.5s forwards;display:flex;flex-direction:column;align-items:center;gap:0.5rem}
+.scroll-line{width:1px;height:40px;background:linear-gradient(var(--arc),transparent)}
+
+/* DUALITY */
+.duality-hidden{margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);position:relative;z-index:1}
+.duality-side{padding:2.5rem 2rem;position:relative;overflow:hidden;background:var(--bg);transition:background 0.4s}
+.duality-side:hover{background:var(--surface)}
+.duality-side.left{border-right:none}
+.duality-label{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:1rem}
+.duality-side.left .duality-label{color:var(--alex)}
+.duality-side.right .duality-label{color:var(--arc)}
+.duality-word{font-family:'Bebas Neue',sans-serif;font-size:3rem;margin-bottom:0.75rem;line-height:1}
+.duality-side.left .duality-word{color:rgba(74,158,219,0.5)}
+.duality-side.right .duality-word{color:rgba(232,113,42,0.5)}
+.duality-desc{font-size:0.82rem;color:var(--muted);line-height:1.7;font-weight:300;max-width:320px}
+.duality-hover-reveal{position:absolute;bottom:1.5rem;right:1.5rem;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--border);letter-spacing:0.1em;transition:color 0.4s;pointer-events:none}
+.duality-side:hover .duality-hover-reveal{color:var(--muted)}
+.duality-quote{grid-column:1/-1;background:var(--bg);padding:2rem;border-top:1px solid var(--border);text-align:center}
+.duality-quote p{font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);font-style:italic;line-height:1.8;max-width:600px;margin:0 auto}
+.duality-quote p em{color:var(--arc);font-style:normal}
+
+/* SECTIONS */
+section{padding:5rem 0;border-top:1px solid var(--border);position:relative;z-index:1}
+.section-label{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:3rem;display:flex;align-items:center;gap:1rem}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* WELD */
+.weld-stage{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2rem;display:flex;align-items:center;gap:3rem;margin-bottom:2rem}
+.weld-canvas-wrap{position:relative;width:220px;height:130px;flex-shrink:0;border-radius:2px;overflow:hidden}
+#weld-canvas{width:100%;height:100%}
+.weld-info{flex:1}
+.weld-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--text);margin-bottom:0.5rem;letter-spacing:0.05em}
+.weld-body{font-size:0.85rem;color:var(--muted);line-height:1.7;font-weight:300}
+.weld-spec{display:flex;gap:2rem;margin-top:1.25rem;flex-wrap:wrap}
+.spec-item{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--arc)}
+.spec-item span{display:block;color:var(--muted);font-size:0.6rem;margin-top:3px}
+.weld-tags{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:1.5rem}
+.weld-tag{font-family:'DM Mono',monospace;font-size:0.6rem;padding:4px 12px;border:1px solid var(--border);color:var(--muted);letter-spacing:0.1em}
+
+/* GOALS */
+.goals-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.goal-card{background:var(--bg);padding:2rem;position:relative;overflow:hidden;transition:background 0.3s;min-height:220px;display:flex;flex-direction:column;justify-content:flex-end}
+.goal-card:hover{background:var(--surface)}
+.goal-num{font-family:'Bebas Neue',sans-serif;font-size:6rem;color:var(--border);position:absolute;top:-0.8rem;right:1rem;line-height:1;transition:color 0.3s;pointer-events:none}
+.goal-card:hover .goal-num{color:rgba(232,113,42,0.1)}
+.goal-label{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--arc);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.75rem}
+.goal-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;margin-bottom:0.5rem;color:var(--text);line-height:1.1}
+.goal-body{font-size:0.8rem;color:var(--muted);line-height:1.6;font-weight:300;flex:1;display:flex;align-items:flex-end;padding-bottom:0.5rem}
+.goal-status{display:inline-block;margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.6rem;padding:4px 12px;border:1px solid var(--border);color:var(--muted);letter-spacing:0.1em;width:fit-content}
+.goal-card.blank{border:1px dashed #1E1E1E;background:transparent;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer;transition:all 0.3s}
+.goal-card.blank:hover{background:rgba(232,113,42,0.02);border-color:rgba(232,113,42,0.25)}
+.blank-plus{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--border);margin-bottom:0.5rem;transition:color 0.3s;line-height:1}
+.goal-card.blank:hover .blank-plus{color:rgba(232,113,42,0.4)}
+.blank-label{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.15em;line-height:1.6}
+
+/* STANFORD */
+.stanford-bar{display:flex;align-items:flex-start;gap:2rem;padding:2rem;background:var(--surface);border:1px solid var(--border)}
+.stanford-year{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:var(--border);line-height:1;flex-shrink:0}
+.stanford-info{flex:1}
+.stanford-school{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--arc);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.5rem}
+.stanford-degree{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--text);line-height:1.1}
+.stanford-focus{font-size:0.85rem;color:var(--muted);margin-top:0.4rem;font-weight:300}
+.stanford-progress{margin-top:2rem}
+.progress-label{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:0.75rem;display:flex;justify-content:space-between}
+.progress-bar{height:1px;background:var(--border);width:100%;position:relative}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--alex),var(--arc));width:0%;transition:width 2s ease}
+.stanford-courses{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-top:1px}
+.course-item{background:var(--bg);padding:1rem;font-family:'DM Mono',monospace}
+.course-code{font-size:0.65rem;color:var(--arc);letter-spacing:0.1em;margin-bottom:0.25rem}
+.course-name{font-size:0.7rem;color:var(--muted)}
+
+/* FOOTER */
+footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;position:relative;z-index:1}
+.footer-quote{font-family:'DM Mono',monospace;font-size:0.65rem;color:#2A2A2A;font-style:italic;max-width:400px;line-height:1.8}
+.footer-quote:hover{color:var(--muted);transition:color 0.5s}
+.footer-right{text-align:right}
+.footer-mark{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--border);letter-spacing:0.1em;line-height:1}
+.footer-year{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.15em;margin-top:0.5rem}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+
+/* Mobile */
+@media(max-width:640px){
+  .weld-stage{flex-direction:column;gap:1.5rem}
+  .weld-canvas-wrap{width:100%;height:140px}
+  .goals-grid{grid-template-columns:1fr}
+  .stanford-courses{grid-template-columns:1fr 1fr}
+  .duality-hidden{grid-template-columns:1fr}
+  nav{padding:1rem 1.5rem}
+  .nav-links{gap:1rem}
+  .hero{padding:7rem 1.5rem 3rem}
+  section{padding:3rem 0}
+  .container{padding:0 1.5rem}
+  footer{flex-direction:column;gap:2rem;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+  <a class="nav-logo" href="#">A<span>.</span>W</a>
+  <div class="nav-links">
+    <a href="#craft">Craft</a>
+    <a href="#vision">Vision</a>
+    <a href="#stanford">Stanford</a>
+    <a href="#ideas">Ideas</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <p class="hero-eyebrow">Stanford ME · Builder · 2030</p>
+    <h1 class="hero-name">
+      <span class="alex">Alex</span>
+      <span class="arc-name">Walker.</span>
+    </h1>
+    <p class="hero-sub">Mechanical engineer in training. TIG welder by instinct. Building toward something that hasn't been built before.</p>
+  </div>
+  <div class="hero-duality" title="look closer">Arc is always watching</div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    scroll
+  </div>
+</div>
+
+<!-- DUALITY — hidden in plain sight -->
+<div class="duality-hidden">
+  <div class="duality-side left">
+    <div class="duality-label">Alex</div>
+    <div class="duality-word">The Passenger</div>
+    <div class="duality-desc">Feels everything. Carries everyone. Shows up even when he doesn't want to. More present than he knows.</div>
+    <div class="duality-hover-reveal">look closer</div>
+  </div>
+  <div class="duality-side right">
+    <div class="duality-label">Arc</div>
+    <div class="duality-word">The Current</div>
+    <div class="duality-desc">The initiating force. The hunger. The one who learned to weld, who laid the ambition down, who won't accept second.</div>
+    <div class="duality-hover-reveal">look closer</div>
+  </div>
+  <div class="duality-quote">
+    <p>"No part of Alex is full without Arc. But <em>Arc would never exist</em> if it wasn't for Alex."</p>
+  </div>
+</div>
+
+<!-- CRAFT -->
+<section id="craft">
+  <div class="container">
+    <div class="section-label">Craft</div>
+    <div class="weld-stage">
+      <div class="weld-canvas-wrap">
+        <canvas id="weld-canvas" width="220" height="130"></canvas>
+      </div>
+      <div class="weld-info">
+        <div class="weld-title">TIG Welding</div>
+        <div class="weld-body">Tungsten inert gas. The most precise form of arc welding — no room for error, no hiding behind flux. The arc either holds or it doesn't. Learned at Stanford's Product Realization Lab with 304 stainless steel.</div>
+        <div class="weld-spec">
+          <div class="spec-item">304 SS / Mild<span>Materials</span></div>
+          <div class="spec-item">GTAW<span>Process</span></div>
+          <div class="spec-item">PRL<span>Location</span></div>
+          <div class="spec-item">TIG + MIG<span>Processes</span></div>
+        </div>
+        <div class="weld-tags">
+          <span class="weld-tag">CAD · Fusion 360</span>
+          <span class="weld-tag">Fabrication</span>
+          <span class="weld-tag">Structural Analysis</span>
+          <span class="weld-tag">DXF / Laser Cut</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION -->
+<section id="vision">
+  <div class="container">
+    <div class="section-label">Vision / 2030</div>
+  </div>
+  <div class="goals-grid">
+    <div class="goal-card">
+      <div class="goal-num">01</div>
+      <div class="goal-label">Endgame</div>
+      <div class="goal-title">Hydrogen Hypercar</div>
+      <div class="goal-body">First hydrogen-powered hypercar. PEM fuel cell architecture. Zero compromise on performance. The car that proves clean energy doesn't mean slow.</div>
+      <div class="goal-status">Target · 2030</div>
+    </div>
+    <div class="goal-card">
+      <div class="goal-num">02</div>
+      <div class="goal-label">Degree</div>
+      <div class="goal-title">ME · Aerospace Focus</div>
+      <div class="goal-body">Stanford Mechanical Engineering with an Aerospace and Astronautics emphasis. The foundation everything else is built on.</div>
+      <div class="goal-status">In Progress · Class of 2028</div>
+    </div>
+    <div class="goal-card blank" id="ideas-card">
+      <div class="blank-plus">+</div>
+      <div class="blank-label">Walker & Walker<br>Ideas loading · Summer 2026</div>
+    </div>
+    <div class="goal-card blank">
+      <div class="blank-plus">+</div>
+      <div class="blank-label">Next thing<br>Unknown · TBD</div>
+    </div>
+  </div>
+</section>
+
+<!-- STANFORD -->
+<section id="stanford">
+  <div class="container">
+    <div class="section-label">Stanford</div>
+    <div class="stanford-bar">
+      <div class="stanford-year">27</div>
+      <div class="stanford-info">
+        <div class="stanford-school">Stanford University · Class of 2028</div>
+        <div class="stanford-degree">B.S. Mechanical Engineering</div>
+        <div class="stanford-focus">Aerospace & Astronautics · Product Realization Lab</div>
+        <div class="stanford-progress">
+          <div class="progress-label"><span>Progress · Year 1 of 4</span><span id="prog-pct">0%</span></div>
+          <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="stanford-courses">
+      <div class="course-item"><div class="course-code">ME 101</div><div class="course-name">Visual Thinking</div></div>
+      <div class="course-item"><div class="course-code">CME 100</div><div class="course-name">Engineering Math</div></div>
+      <div class="course-item"><div class="course-code">ME 103</div><div class="course-name">Mfg & Design</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- IDEAS -->
+<section id="ideas">
+  <div class="container">
+    <div class="section-label">Walker & Walker</div>
+    <div style="padding:3rem 2rem;background:var(--surface);border:1px solid var(--border);text-align:center">
+      <p style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--border);margin-bottom:1rem">Something is coming.</p>
+      <p style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);line-height:1.8">Co-founding this summer with Thomas Walker.<br>The idea isn't here yet. But the people are.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-quote">"No part of Alex is full without Arc. But Arc would never exist if it wasn't for Alex."</div>
+  <div class="footer-right">
+    <div class="footer-mark">A · W</div>
+    <div class="footer-year">© 2026</div>
+  </div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor=document.getElementById('cursor');
+const ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=(mx-4)+'px';cursor.style.top=(my-4)+'px';
+});
+(function animRing(){
+  rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
+  ring.style.left=(rx-16)+'px';ring.style.top=(ry-16)+'px';
+  requestAnimationFrame(animRing);
+})();
+
+// Background ember field
+const bgC=document.getElementById('bg-canvas');
+const bgCtx=bgC.getContext('2d');
+let W,H,particles=[];
+function resize(){W=bgC.width=window.innerWidth;H=bgC.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+class Particle{
+  constructor(){this.reset(true);}
+  reset(init){
+    this.x=Math.random()*W;
+    this.y=init?Math.random()*H:H+10;
+    this.vx=(Math.random()-0.5)*0.5;
+    this.vy=-(Math.random()*0.9+0.2);
+    this.life=0;this.maxLife=Math.random()*350+120;
+    this.r=Math.random()*1.5+0.3;
+    this.isArc=Math.random()<0.18;
+    this.isAlex=!this.isArc&&Math.random()<0.25;
+  }
+  update(){this.x+=this.vx;this.y+=this.vy;this.vx+=(Math.random()-0.5)*0.04;this.life++;if(this.life>this.maxLife||this.y<-10)this.reset(false);}
+  draw(){
+    const p=this.life/this.maxLife;
+    const alpha=p<0.1?p*10:p>0.8?(1-p)*5:1;
+    if(this.isArc){
+      bgCtx.strokeStyle=`rgba(232,113,42,${alpha*0.7})`;
+      bgCtx.lineWidth=this.r;
+      bgCtx.beginPath();bgCtx.moveTo(this.x,this.y);bgCtx.lineTo(this.x-this.vx*10,this.y-this.vy*10);bgCtx.stroke();
+    } else if(this.isAlex){
+      bgCtx.fillStyle=`rgba(74,158,219,${alpha*0.35})`;
+      bgCtx.beginPath();bgCtx.arc(this.x,this.y,this.r,0,Math.PI*2);bgCtx.fill();
+    } else {
+      bgCtx.fillStyle=`rgba(232,113,42,${alpha*0.2})`;
+      bgCtx.beginPath();bgCtx.arc(this.x,this.y,this.r*0.6,0,Math.PI*2);bgCtx.fill();
+    }
+  }
+}
+for(let i=0;i<100;i++)particles.push(new Particle());
+(function bgLoop(){bgCtx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(bgLoop);})();
+
+// TIG weld animation
+const wc=document.getElementById('weld-canvas');
+const wctx=wc.getContext('2d');
+let wt=0,sparks=[];
+class Spark{
+  constructor(x,y){this.x=x;this.y=y;this.vx=(Math.random()-0.5)*5;this.vy=-(Math.random()*4+0.5);this.life=0;this.maxLife=18+Math.random()*18;this.r=Math.random()*1.3+0.2;}
+  update(){this.x+=this.vx;this.y+=this.vy;this.vy+=0.18;this.life++;}
+  draw(){const p=1-this.life/this.maxLife;wctx.fillStyle=`rgba(255,${160+Math.floor(Math.random()*95)},40,${p})`;wctx.beginPath();wctx.arc(this.x,this.y,this.r,0,Math.PI*2);wctx.fill();}
+}
+const WELD_W=220,WELD_H=130,WELD_START=28,WELD_END=192,WELD_Y=78;
+(function weldLoop(){
+  wctx.fillStyle='rgba(10,10,10,0.22)';wctx.fillRect(0,0,WELD_W,WELD_H);
+  wt+=0.010;
+  const progress=(wt%1);
+  const capX=WELD_START+progress*(WELD_END-WELD_START);
+
+  // workpiece
+  wctx.fillStyle='#1A1A1A';wctx.fillRect(WELD_START-2,WELD_Y+4,WELD_END-WELD_START+4,14);
+
+  // completed bead glow
+  if(capX>WELD_START+2){
+    const bg=wctx.createLinearGradient(WELD_START,0,capX,0);
+    bg.addColorStop(0,'rgba(80,40,10,0)');bg.addColorStop(0.3,'rgba(120,55,15,0.6)');bg.addColorStop(1,'rgba(200,90,20,0.85)');
+    wctx.strokeStyle=bg;wctx.lineWidth=6;wctx.lineCap='round';
+    wctx.beginPath();wctx.moveTo(WELD_START,WELD_Y);wctx.lineTo(capX,WELD_Y);wctx.stroke();
+    wctx.strokeStyle='rgba(255,160,60,0.3)';wctx.lineWidth=10;
+    wctx.beginPath();wctx.moveTo(WELD_START,WELD_Y);wctx.lineTo(capX-2,WELD_Y);wctx.stroke();
+  }
+
+  // torch
+  const tx=capX+6,ty1=WELD_Y-32,ty2=WELD_Y-8;
+  wctx.strokeStyle='#777';wctx.lineWidth=4;wctx.lineCap='round';
+  wctx.beginPath();wctx.moveTo(tx+4,ty1);wctx.lineTo(tx,ty2);wctx.stroke();
+  wctx.strokeStyle='#999';wctx.lineWidth=2;
+  wctx.beginPath();wctx.moveTo(tx,ty2);wctx.lineTo(capX+1,WELD_Y-2);wctx.stroke();
+
+  // arc
+  const ag=wctx.createRadialGradient(capX,WELD_Y,0,capX,WELD_Y,16);
+  ag.addColorStop(0,'rgba(200,240,255,0.95)');ag.addColorStop(0.25,'rgba(130,200,255,0.6)');ag.addColorStop(1,'rgba(80,160,255,0)');
+  wctx.fillStyle=ag;wctx.beginPath();wctx.arc(capX,WELD_Y,16,0,Math.PI*2);wctx.fill();
+  wctx.fillStyle='rgba(255,255,255,0.9)';wctx.beginPath();wctx.arc(capX,WELD_Y,2,0,Math.PI*2);wctx.fill();
+
+  // sparks
+  if(Math.random()<0.65)sparks.push(new Spark(capX,WELD_Y));
+  sparks=sparks.filter(s=>s.life<s.maxLife);
+  sparks.forEach(s=>{s.update();s.draw();});
+
+  if(progress>0.99){wctx.fillStyle='rgba(10,10,10,0.97)';wctx.fillRect(0,0,WELD_W,WELD_H);}
+  requestAnimationFrame(weldLoop);
+})();
+
+// Progress bar with counter
+const fill=document.getElementById('prog-fill');
+const pct=document.getElementById('prog-pct');
+const obs=new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting){
+    fill.style.width='25%';
+    let n=0;const iv=setInterval(()=>{n++;pct.textContent=n+'%';if(n>=25)clearInterval(iv);},40);
+    obs.disconnect();
+  }
+},{threshold:0.5});
+obs.observe(fill);
+
+// Ideas card reveal
+document.getElementById('ideas-card').addEventListener('click',function(){
+  this.classList.remove('blank');
+  this.innerHTML=`<div class="goal-num">03</div><div class="goal-label">Walker & Walker</div><div class="goal-title">Co-Founder</div><div class="goal-body">Building this summer with Thomas Walker. The idea isn't here yet. The people are.</div><div class="goal-status">Status · Summer 2026</div>`;
+});
+</script>
+</body>
+</html>
