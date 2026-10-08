@@ -31,6 +31,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.5rem 2rem;display:
 .nav-links{display:flex;gap:2rem}
 .nav-links a{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s}
 .nav-links a:hover{color:var(--arc)}
+.nav-links a.nav-ext{color:var(--text)}
+.footer-link{display:inline-block;margin-top:0.75rem;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--arc);text-decoration:none;letter-spacing:0.1em;border-bottom:1px solid rgba(232,113,42,0.3);padding-bottom:2px}
+.footer-link:hover{border-color:var(--arc)}
 
 /* HERO */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:8rem 2rem 4rem;position:relative;overflow:hidden}
@@ -107,13 +110,30 @@ section{padding:5rem 0;border-top:1px solid var(--border);position:relative;z-in
 .progress-label{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:0.75rem;display:flex;justify-content:space-between}
 .progress-bar{height:1px;background:var(--border);width:100%;position:relative}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--alex),var(--arc));width:0%;transition:width 2s ease}
-.stanford-courses{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-top:1px}
+.stanford-courses{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);border-left:1px solid var(--border)}
+.course-item{border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
 .course-item{background:var(--bg);padding:1rem;font-family:'DM Mono',monospace}
 .course-code{font-size:0.65rem;color:var(--arc);letter-spacing:0.1em;margin-bottom:0.25rem}
 .course-name{font-size:0.7rem;color:var(--muted)}
 
+/* WORK */
+.work-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.work-card{background:var(--bg);padding:2rem;position:relative;overflow:hidden;transition:background 0.3s;display:flex;flex-direction:column}
+.work-card:hover{background:var(--surface)}
+.work-org{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.75rem}
+.work-card.arc .work-org{color:var(--arc)}
+.work-card.alex .work-org{color:var(--alex)}
+.work-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--text);line-height:1.1;margin-bottom:0.25rem}
+.work-role{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.08em;margin-bottom:1rem}
+.work-body{font-size:0.82rem;color:var(--muted);line-height:1.7;font-weight:300}
+.work-body p+p{margin-top:0.75rem}
+.work-tags{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:1.5rem}
+.work-tag{font-family:'DM Mono',monospace;font-size:0.6rem;padding:4px 12px;border:1px solid var(--border);color:var(--muted);letter-spacing:0.1em}
+.goal-card.wide{grid-column:1/-1;min-height:140px}
+.course-group{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;margin:2rem 0 0.75rem}
+
 /* FOOTER */
-footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;position:relative;z-index:1}
+footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;align-items:flex-end;position:relative;z-index:1}
 .footer-quote{font-family:'DM Mono',monospace;font-size:0.65rem;color:#2A2A2A;font-style:italic;max-width:400px;line-height:1.8}
 .footer-quote:hover{color:var(--muted);transition:color 0.5s}
 .footer-right{text-align:right}
@@ -129,10 +149,13 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
   .weld-stage{flex-direction:column;gap:1.5rem}
   .weld-canvas-wrap{width:100%;height:140px}
   .goals-grid{grid-template-columns:1fr}
+  .work-grid{grid-template-columns:1fr}
   .stanford-courses{grid-template-columns:1fr 1fr}
   .duality-hidden{grid-template-columns:1fr}
   nav{padding:1rem 1.5rem}
-  .nav-links{gap:1rem}
+  .nav-links{gap:0.9rem}
+  .nav-links a{font-size:0.6rem}
+  .weld-stage{padding:1.5rem}
   .hero{padding:7rem 1.5rem 3rem}
   section{padding:3rem 0}
   .container{padding:0 1.5rem}
@@ -150,9 +173,10 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
   <a class="nav-logo" href="#">A<span>.</span>W</a>
   <div class="nav-links">
     <a href="#craft">Craft</a>
+    <a href="#work">Work</a>
     <a href="#vision">Vision</a>
     <a href="#stanford">Stanford</a>
-    <a href="#ideas">Ideas</a>
+    <a href="https://www.linkedin.com/in/alex-walker-948a48370/" target="_blank" rel="noopener" class="nav-ext">LinkedIn ↗</a>
   </div>
 </nav>
 
@@ -164,33 +188,14 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
       <span class="alex">Alex</span>
       <span class="arc-name">Walker.</span>
     </h1>
-    <p class="hero-sub">Mechanical engineer in training. TIG welder by instinct. Building toward something that hasn't been built before.</p>
+    <p class="hero-sub">Mechanical engineer in training. TIG welder by instinct. Drone builder. Propulsion on Stanford DBF. Building toward something that hasn't been built before.</p>
   </div>
-  <div class="hero-duality" title="look closer">Arc is always watching</div>
   <div class="hero-scroll">
     <div class="scroll-line"></div>
     scroll
   </div>
 </div>
 
-<!-- DUALITY — hidden in plain sight -->
-<div class="duality-hidden">
-  <div class="duality-side left">
-    <div class="duality-label">Alex</div>
-    <div class="duality-word">The Passenger</div>
-    <div class="duality-desc">Feels everything. Carries everyone. Shows up even when he doesn't want to. More present than he knows.</div>
-    <div class="duality-hover-reveal">look closer</div>
-  </div>
-  <div class="duality-side right">
-    <div class="duality-label">Arc</div>
-    <div class="duality-word">The Current</div>
-    <div class="duality-desc">The initiating force. The hunger. The one who learned to weld, who laid the ambition down, who won't accept second.</div>
-    <div class="duality-hover-reveal">look closer</div>
-  </div>
-  <div class="duality-quote">
-    <p>"No part of Alex is full without Arc. But <em>Arc would never exist</em> if it wasn't for Alex."</p>
-  </div>
-</div>
 
 <!-- CRAFT -->
 <section id="craft">
@@ -217,6 +222,85 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
         </div>
       </div>
     </div>
+
+    <div class="weld-stage">
+      <div class="weld-canvas-wrap">
+        <canvas id="drone-canvas" width="220" height="130"></canvas>
+      </div>
+      <div class="weld-info">
+        <div class="weld-title">Drones</div>
+        <div class="weld-body">Airframes built from bare parts: frame, motors, ESCs, power, flight electronics, and the mounts that hold it all together. Built as test platforms for navigation hardware that has to work when GPS doesn't.</div>
+        <div class="weld-spec">
+          <div class="spec-item">Multirotor<span>Platform</span></div>
+          <div class="spec-item">GPS-Denied<span>Mission</span></div>
+          <div class="spec-item">OCKO<span>Built For</span></div>
+        </div>
+        <div class="weld-tags">
+          <span class="weld-tag">Soldering</span>
+          <span class="weld-tag">Wiring Harnesses</span>
+          <span class="weld-tag">3D Printing</span>
+          <span class="weld-tag">Integration</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="weld-stage">
+      <div class="weld-canvas-wrap">
+        <canvas id="prop-canvas" width="220" height="130"></canvas>
+      </div>
+      <div class="weld-info">
+        <div class="weld-title">Propulsion</div>
+        <div class="weld-body">Electric powertrains for aircraft that have to fly a mission, not just fly. Motor, prop, and battery matched against thrust, endurance, and every gram of the weight budget.</div>
+        <div class="weld-spec">
+          <div class="spec-item">Electric<span>Powertrain</span></div>
+          <div class="spec-item">Thrust Stand<span>Testing</span></div>
+          <div class="spec-item">DBF<span>Team</span></div>
+        </div>
+        <div class="weld-tags">
+          <span class="weld-tag">Motor / Prop Matching</span>
+          <span class="weld-tag">Battery Sizing</span>
+          <span class="weld-tag">Weight Budget</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section id="work">
+  <div class="container">
+    <div class="section-label">Work / Flight</div>
+  </div>
+  <div class="work-grid">
+    <div class="work-card arc">
+      <div class="work-org">OCKO Navigation</div>
+      <div class="work-title">Drone Builder</div>
+      <div class="work-role">Hardware Integration · Contract</div>
+      <div class="work-body">
+        <p>Built drones from the ground up for OCKO Navigation, a startup making navigation hardware for environments where GPS can't be trusted &mdash; jammed, spoofed, or simply not there.</p>
+        <p>Each airframe is a test platform for OCKO's SR10 navigation module, so the build has to be right: clean power, clean wiring, and a payload mount that keeps the sensor rigid and isolated. Built in my own garage: assembled, soldered, printed, and debugged every one myself.</p>
+      </div>
+      <div class="work-tags">
+        <span class="work-tag">GPS-Denied Nav</span>
+        <span class="work-tag">Airframe Build</span>
+        <span class="work-tag">Soldering · Wiring</span>
+        <span class="work-tag">3D-Printed Mounts</span>
+      </div>
+    </div>
+    <div class="work-card alex">
+      <div class="work-org">Stanford DBF · Flight Club</div>
+      <div class="work-title">Propulsion</div>
+      <div class="work-role">Propulsion · Second-in-Command</div>
+      <div class="work-body">
+        <p>Stanford's Design/Build/Fly team designs, builds, and flies a new electric RC aircraft every year for the AIAA DBF competition, built around that year's mission.</p>
+        <p>Working directly under the propulsion lead: motor, propeller, and battery selection, thrust testing, and making sure the powertrain hits the mission's numbers without blowing the weight budget.</p>
+      </div>
+      <div class="work-tags">
+        <span class="work-tag">Electric Propulsion</span>
+        <span class="work-tag">Thrust Testing</span>
+        <span class="work-tag">AIAA DBF</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -240,11 +324,7 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
       <div class="goal-body">Stanford Mechanical Engineering with an Aerospace and Astronautics emphasis. The foundation everything else is built on.</div>
       <div class="goal-status">In Progress · Class of 2029</div>
     </div>
-    <div class="goal-card blank" id="ideas-card">
-      <div class="blank-plus">+</div>
-      <div class="blank-label">Walker & Walker<br>Ideas loading · Summer 2026</div>
-    </div>
-    <div class="goal-card blank">
+    <div class="goal-card blank wide">
       <div class="blank-plus">+</div>
       <div class="blank-label">Next thing<br>Unknown · TBD</div>
     </div>
@@ -262,35 +342,36 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
         <div class="stanford-degree">B.S. Mechanical Engineering</div>
         <div class="stanford-focus">Aerospace & Astronautics · Product Realization Lab</div>
         <div class="stanford-progress">
-          <div class="progress-label"><span>Progress · Year 1 of 4</span><span id="prog-pct">0%</span></div>
+          <div class="progress-label"><span>Progress · Year 2 of 4</span><span id="prog-pct">0%</span></div>
           <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
         </div>
       </div>
     </div>
+    <div class="course-group">Completed</div>
     <div class="stanford-courses">
+      <div class="course-item"><div class="course-code">CME 100</div><div class="course-name">Vector Calculus for Engineers</div></div>
+      <div class="course-item"><div class="course-code">PHYSICS 41</div><div class="course-name">Mechanics</div></div>
+      <div class="course-item"><div class="course-code">PHYSICS 43</div><div class="course-name">Electricity & Magnetism</div></div>
+      <div class="course-item"><div class="course-code">CS 106A</div><div class="course-name">Programming Methodology</div></div>
+      <div class="course-item"><div class="course-code">ENGR 14</div><div class="course-name">Intro to Solid Mechanics</div></div>
       <div class="course-item"><div class="course-code">ME 101</div><div class="course-name">Visual Thinking</div></div>
-      <div class="course-item"><div class="course-code">CME 100</div><div class="course-name">Engineering Math</div></div>
-      <div class="course-item"><div class="course-code">ME 103</div><div class="course-name">Mfg & Design</div></div>
+      <div class="course-item"><div class="course-code">ME 103</div><div class="course-name">Product Realization: Design & Making</div></div>
     </div>
-  </div>
-</section>
-
-<!-- IDEAS -->
-<section id="ideas">
-  <div class="container">
-    <div class="section-label">Walker & Walker</div>
-    <div style="padding:3rem 2rem;background:var(--surface);border:1px solid var(--border);text-align:center">
-      <p style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--border);margin-bottom:1rem">Something is coming.</p>
-      <p style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);line-height:1.8">Co-founding this summer with Thomas Walker.<br>The idea isn't here yet. But the people are.</p>
+    <div class="course-group">In Progress · Fall 2026</div>
+    <div class="stanford-courses">
+      <div class="course-item"><div class="course-code">AA 100</div><div class="course-name">Intro to Aeronautics & Astronautics</div></div>
+      <div class="course-item"><div class="course-code">CME 102</div><div class="course-name">Ordinary Differential Equations</div></div>
+      <div class="course-item"><div class="course-code">ME 102</div><div class="course-name">Foundations of Product Realization</div></div>
+      <div class="course-item"><div class="course-code">ME 30</div><div class="course-name">Engineering Thermodynamics</div></div>
     </div>
   </div>
 </section>
 
 <footer>
-  <div class="footer-quote">"No part of Alex is full without Arc. But Arc would never exist if it wasn't for Alex."</div>
   <div class="footer-right">
     <div class="footer-mark">A · W</div>
     <div class="footer-year">© 2026</div>
+    <a class="footer-link" href="https://www.linkedin.com/in/alex-walker-948a48370/" target="_blank" rel="noopener">LinkedIn ↗</a>
   </div>
 </footer>
 
@@ -398,23 +479,101 @@ const WELD_W=220,WELD_H=130,WELD_START=28,WELD_END=192,WELD_Y=78;
   requestAnimationFrame(weldLoop);
 })();
 
+// Drone hover animation
+(function(){
+  const c=document.getElementById('drone-canvas'),x=c.getContext('2d');
+  const W=220,H=130;let t=0,wash=[];
+  const feats=Array.from({length:16},(_,i)=>({x:i*15+Math.random()*8,y:112+Math.random()*12}));
+  (function loop(){
+    x.fillStyle='rgba(10,10,10,0.35)';x.fillRect(0,0,W,H);
+    t+=0.016;
+    const cx=110+Math.sin(t*0.6)*10, cy=48+Math.sin(t*1.3)*4, tilt=Math.cos(t*0.6)*0.06;
+    // ground features being tracked
+    feats.forEach(f=>{f.x-=0.25;if(f.x<-5){f.x=W+5;f.y=112+Math.random()*12;}});
+    feats.forEach(f=>{
+      const d=Math.abs(f.x-cx);
+      if(d<45){x.strokeStyle=`rgba(74,158,219,${0.25*(1-d/45)})`;x.lineWidth=0.6;x.beginPath();x.moveTo(cx,cy+8);x.lineTo(f.x,f.y);x.stroke();}
+      x.fillStyle=d<45?'rgba(74,158,219,0.9)':'rgba(74,158,219,0.3)';
+      x.fillRect(f.x-1,f.y-1,2,2);
+    });
+    // downwash
+    if(Math.random()<0.8){[-46,46].forEach(o=>wash.push({x:cx+o*Math.cos(tilt)+(Math.random()-0.5)*16,y:cy-6+o*Math.sin(tilt),vy:1.2+Math.random(),l:0}));}
+    wash=wash.filter(w=>w.l<40);
+    wash.forEach(w=>{w.y+=w.vy;w.l++;x.fillStyle=`rgba(240,237,232,${0.18*(1-w.l/40)})`;x.fillRect(w.x,w.y,1,3);});
+    // airframe
+    x.save();x.translate(cx,cy);x.rotate(tilt);
+    x.strokeStyle='#555';x.lineWidth=3;x.lineCap='round';
+    x.beginPath();x.moveTo(-46,0);x.lineTo(46,0);x.stroke();
+    x.fillStyle='#1E1E1E';x.strokeStyle='#3A3A3A';x.lineWidth=1;
+    x.beginPath();x.rect(-16,-7,32,14);x.fill();x.stroke();
+    x.fillStyle='#2A2A2A';x.fillRect(-6,7,12,4);
+    [-46,46].forEach((o,i)=>{
+      x.fillStyle='#444';x.fillRect(o-4,-7,8,7);
+      x.fillStyle='rgba(240,237,232,0.07)';x.beginPath();x.ellipse(o,-9,22,2.2,0,0,Math.PI*2);x.fill();
+      const a=t*55+i*1.3,L=22*Math.cos(a);
+      x.strokeStyle='rgba(240,237,232,0.55)';x.lineWidth=1.5;x.beginPath();x.moveTo(o-L,-9);x.lineTo(o+L,-9);x.stroke();
+    });
+    const on=(Math.floor(t*3)%2)===0;
+    x.fillStyle=on?'rgba(232,113,42,1)':'rgba(232,113,42,0.2)';x.beginPath();x.arc(12,0,1.6,0,Math.PI*2);x.fill();
+    x.restore();
+    requestAnimationFrame(loop);
+  })();
+})();
+
+// Propulsion: motor + prop with slipstream
+(function(){
+  const c=document.getElementById('prop-canvas'),x=c.getContext('2d');
+  const W=220,H=130,PX=88,PY=62;let t=0,flow=[],thrust=0.8;
+  x.font="8px 'DM Mono', monospace";
+  (function loop(){
+    x.fillStyle='rgba(10,10,10,0.3)';x.fillRect(0,0,W,H);
+    t+=0.016;
+    // airflow: slow and wide upstream, fast and contracted downstream
+    if(flow.length<70&&Math.random()<0.9)flow.push({x:0,y:PY+(Math.random()-0.5)*80,o:Math.random()});
+    flow=flow.filter(f=>f.x<W+5);
+    flow.forEach(f=>{
+      const past=f.x>PX;
+      const v=past?3.2:1.1+f.x/PX*0.9;
+      const target=past?PY+(f.y-PY)*0.985:f.y;
+      f.y=target;f.x+=v;
+      x.strokeStyle=`rgba(74,158,219,${past?0.55:0.22})`;x.lineWidth=1;
+      x.beginPath();x.moveTo(f.x,f.y);x.lineTo(f.x-v*3,f.y);x.stroke();
+    });
+    // motor can + mount
+    x.fillStyle='#1A1A1A';x.fillRect(30,PY-3,26,6);
+    const g=x.createLinearGradient(0,PY-13,0,PY+13);g.addColorStop(0,'#3A3A3A');g.addColorStop(0.5,'#666');g.addColorStop(1,'#2A2A2A');
+    x.fillStyle=g;x.fillRect(56,PY-13,24,26);
+    // heat glow on windings
+    x.fillStyle=`rgba(232,113,42,${0.25+0.15*Math.sin(t*4)})`;x.fillRect(58,PY-11,20,2);x.fillRect(58,PY+9,20,2);
+    x.strokeStyle='#888';x.lineWidth=2;x.beginPath();x.moveTo(80,PY);x.lineTo(PX,PY);x.stroke();
+    // prop disc + blade (side view)
+    x.fillStyle='rgba(240,237,232,0.06)';x.beginPath();x.ellipse(PX,PY,3,40,0,0,Math.PI*2);x.fill();
+    const a=t*48,L=40*Math.cos(a);
+    x.strokeStyle='rgba(240,237,232,0.75)';x.lineWidth=2.5;x.lineCap='round';
+    x.beginPath();x.moveTo(PX,PY-L);x.lineTo(PX,PY+L);x.stroke();
+    x.fillStyle='#999';x.beginPath();x.arc(PX,PY,3,0,Math.PI*2);x.fill();
+    // thrust readout
+    thrust+=(0.82+0.12*Math.sin(t*0.9)-thrust)*0.05;
+    x.fillStyle='#0A0A0A';x.fillRect(150,104,64,20);
+    x.fillStyle='#555550';x.fillText('THRUST',152,112);
+    x.fillStyle='#1E1E1E';x.fillRect(152,116,58,3);
+    x.fillStyle='#E8712A';x.fillRect(152,116,58*thrust,3);
+    requestAnimationFrame(loop);
+  })();
+})();
+
 // Progress bar with counter
 const fill=document.getElementById('prog-fill');
 const pct=document.getElementById('prog-pct');
 const obs=new IntersectionObserver(entries=>{
   if(entries[0].isIntersecting){
-    fill.style.width='25%';
-    let n=0;const iv=setInterval(()=>{n++;pct.textContent=n+'%';if(n>=25)clearInterval(iv);},40);
+    fill.style.width='30%';
+    let n=0;const iv=setInterval(()=>{n++;pct.textContent=n+'%';if(n>=30)clearInterval(iv);},40);
     obs.disconnect();
   }
 },{threshold:0.5});
 obs.observe(fill);
 
-// Ideas card reveal
-document.getElementById('ideas-card').addEventListener('click',function(){
-  this.classList.remove('blank');
-  this.innerHTML=`<div class="goal-num">03</div><div class="goal-label">Walker & Walker</div><div class="goal-title">Co-Founder</div><div class="goal-body">Building this summer with Thomas Walker. The idea isn't here yet. The people are.</div><div class="goal-status">Status · Summer 2026</div>`;
-});
 </script>
 </body>
 </html>
