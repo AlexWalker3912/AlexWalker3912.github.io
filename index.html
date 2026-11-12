@@ -431,55 +431,120 @@ class Particle{
 for(let i=0;i<100;i++)particles.push(new Particle());
 (function bgLoop(){bgCtx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(bgLoop);})();
 
-// TIG weld animation
-const wc=document.getElementById('weld-canvas');
-const wctx=wc.getContext('2d');
-let wt=0,sparks=[];
-class Spark{
-  constructor(x,y){this.x=x;this.y=y;this.vx=(Math.random()-0.5)*5;this.vy=-(Math.random()*4+0.5);this.life=0;this.maxLife=18+Math.random()*18;this.r=Math.random()*1.3+0.2;}
-  update(){this.x+=this.vx;this.y+=this.vy;this.vy+=0.18;this.life++;}
-  draw(){const p=1-this.life/this.maxLife;wctx.fillStyle=`rgba(255,${160+Math.floor(Math.random()*95)},40,${p})`;wctx.beginPath();wctx.arc(this.x,this.y,this.r,0,Math.PI*2);wctx.fill();}
-}
-const WELD_W=220,WELD_H=130,WELD_START=28,WELD_END=192,WELD_Y=78;
-(function weldLoop(){
-  wctx.fillStyle='rgba(10,10,10,0.22)';wctx.fillRect(0,0,WELD_W,WELD_H);
-  wt+=0.010;
-  const progress=(wt%1);
-  const capX=WELD_START+progress*(WELD_END-WELD_START);
+// TIG weld animation: weaving torch, filler rod, stack-of-dimes bead with heat tint
+(function(){
+  const c=document.getElementById('weld-canvas');
+  const S=3; c.width=220*S; c.height=130*S;
+  const x=c.getContext('2d'); x.scale(S,S);
+  const W=220,H=130,X0=22,X1=198,Y=72,BW=11,STEP=2.1;
+  const SPEED=0.17;               // px per frame (~17s per pass)
+  // brushed plate, pre-rendered
+  const plate=document.createElement('canvas');plate.width=W*S;plate.height=H*S;
+  const p=plate.getContext('2d');p.scale(S,S);
+  const pg=p.createLinearGradient(0,0,0,H);pg.addColorStop(0,'#141414');pg.addColorStop(0.5,'#202022');pg.addColorStop(1,'#121212');
+  p.fillStyle=pg;p.fillRect(0,0,W,H);
+  for(let i=0;i<500;i++){const yy=Math.random()*H,len=10+Math.random()*60,xx=Math.random()*W;
+    p.strokeStyle=`rgba(255,255,255,${Math.random()*0.035})`;p.lineWidth=0.3+Math.random()*0.4;
+    p.beginPath();p.moveTo(xx,yy);p.lineTo(xx+len,yy+(Math.random()-0.5)*0.6);p.stroke();}
+  // seam between the two plates
+  p.strokeStyle='rgba(0,0,0,0.8)';p.lineWidth=1.2;p.beginPath();p.moveTo(0,Y);p.lineTo(W,Y);p.stroke();
+  p.strokeStyle='rgba(255,255,255,0.05)';p.lineWidth=0.5;p.beginPath();p.moveTo(0,Y+1);p.lineTo(W,Y+1);p.stroke();
 
-  // workpiece
-  wctx.fillStyle='#1A1A1A';wctx.fillRect(WELD_START-2,WELD_Y+4,WELD_END-WELD_START+4,14);
+  // heat tint by distance behind the puddle
+  const stops=[[0,[255,244,214]],[5,[255,190,110]],[12,[214,168,96]],[22,[178,120,82]],[34,[140,92,150]],[48,[84,118,200]],[70,[110,150,205]],[105,[172,178,190]]];
+  function tint(d){
+    if(d<=0)return stops[0][1];
+    for(let i=1;i<stops.length;i++){if(d<stops[i][0]){const [a,ca]=stops[i-1],[b,cb]=stops[i],t=(d-a)/(b-a);
+      return ca.map((v,k)=>Math.round(v+(cb[k]-v)*t));}}
+    return stops[stops.length-1][1];
+  }
+  const rgb=(c,a)=>`rgba(${c[0]},${c[1]},${c[2]},${a})`;
+  const shade=(c,f)=>c.map(v=>Math.max(0,Math.min(255,Math.round(v*f))));
 
-  // completed bead glow
-  if(capX>WELD_START+2){
-    const bg=wctx.createLinearGradient(WELD_START,0,capX,0);
-    bg.addColorStop(0,'rgba(80,40,10,0)');bg.addColorStop(0.3,'rgba(120,55,15,0.6)');bg.addColorStop(1,'rgba(200,90,20,0.85)');
-    wctx.strokeStyle=bg;wctx.lineWidth=6;wctx.lineCap='round';
-    wctx.beginPath();wctx.moveTo(WELD_START,WELD_Y);wctx.lineTo(capX,WELD_Y);wctx.stroke();
-    wctx.strokeStyle='rgba(255,160,60,0.3)';wctx.lineWidth=10;
-    wctx.beginPath();wctx.moveTo(WELD_START,WELD_Y);wctx.lineTo(capX-2,WELD_Y);wctx.stroke();
+  let base,dimes,th,state,hold,fade,sparks;
+  function reset(){base=X0;dimes=[];th=0;state='weld';hold=0;fade=0;sparks=[];}
+  reset();
+
+  function drawBead(px){
+    // continuous base bead underneath
+    if(dimes.length>1){const a=dimes[0].x,b=dimes[dimes.length-1].x;
+      x.fillStyle='rgba(0,0,0,0.35)';x.beginPath();x.ellipse((a+b)/2,Y+1.5,(b-a)/2+3,BW/2+1.2,0,0,Math.PI*2);x.fill();}
+    // fills, oldest first
+    for(const d of dimes){
+      const col=tint(px-d.x);
+      const g=x.createLinearGradient(0,d.y-BW/2,0,d.y+BW/2);
+      g.addColorStop(0,rgb(shade(col,0.45),1));g.addColorStop(0.35,rgb(shade(col,1.15),1));
+      g.addColorStop(0.55,rgb(col,1));g.addColorStop(1,rgb(shade(col,0.35),1));
+      x.fillStyle=g;x.beginPath();x.ellipse(d.x,d.y,d.r*0.55,d.r,0,0,Math.PI*2);x.fill();
+    }
+    // ripple ridges: leading edge of each dime, convex in direction of travel
+    for(const d of dimes){
+      const col=tint(px-d.x);
+      x.strokeStyle=rgb(shade(col,0.5),0.6);x.lineWidth=0.55;
+      x.beginPath();x.ellipse(d.x,d.y,d.r*0.55,d.r*0.92,0,-Math.PI*0.42,Math.PI*0.42);x.stroke();
+      x.strokeStyle=rgb(shade(col,1.35),0.55);x.lineWidth=0.45;
+      x.beginPath();x.ellipse(d.x-0.8,d.y,d.r*0.5,d.r*0.8,0,-Math.PI*0.35,Math.PI*0.35);x.stroke();
+    }
   }
 
-  // torch
-  const tx=capX+6,ty1=WELD_Y-32,ty2=WELD_Y-8;
-  wctx.strokeStyle='#777';wctx.lineWidth=4;wctx.lineCap='round';
-  wctx.beginPath();wctx.moveTo(tx+4,ty1);wctx.lineTo(tx,ty2);wctx.stroke();
-  wctx.strokeStyle='#999';wctx.lineWidth=2;
-  wctx.beginPath();wctx.moveTo(tx,ty2);wctx.lineTo(capX+1,WELD_Y-2);wctx.stroke();
+  (function loop(){
+    x.globalAlpha=1;x.drawImage(plate,0,0,W,H);
+    if(state==='weld'){
+      base+=SPEED; th+=0.075;               // weave cycle ~1.4s
+      if(!dimes.length||base-dimes[dimes.length-1].x>=STEP)
+        dimes.push({x:base,y:Y+(Math.random()-0.5)*0.5,r:BW/2+(Math.random()-0.5)*0.4});
+      if(base>=X1){state='hold';}
+    } else if(state==='hold'){ if(++hold>170)state='fade'; }
+    else { fade+=0.02; if(fade>=1)reset(); }
 
-  // arc
-  const ag=wctx.createRadialGradient(capX,WELD_Y,0,capX,WELD_Y,16);
-  ag.addColorStop(0,'rgba(200,240,255,0.95)');ag.addColorStop(0.25,'rgba(130,200,255,0.6)');ag.addColorStop(1,'rgba(80,160,255,0)');
-  wctx.fillStyle=ag;wctx.beginPath();wctx.arc(capX,WELD_Y,16,0,Math.PI*2);wctx.fill();
-  wctx.fillStyle='rgba(255,255,255,0.9)';wctx.beginPath();wctx.arc(capX,WELD_Y,2,0,Math.PI*2);wctx.fill();
+    // gentle oval weave of the torch around the puddle
+    const ox=Math.cos(th)*2.4, oy=Math.sin(th)*3.6;
+    const tx=base+ox, ty=Y+oy*0.6;
+    const hot=state==='weld';
 
-  // sparks
-  if(Math.random()<0.65)sparks.push(new Spark(capX,WELD_Y));
-  sparks=sparks.filter(s=>s.life<s.maxLife);
-  sparks.forEach(s=>{s.update();s.draw();});
+    // heat haze on plate around puddle
+    if(hot){const hz=x.createRadialGradient(tx,Y,0,tx,Y,28);hz.addColorStop(0,'rgba(255,140,50,0.16)');hz.addColorStop(1,'rgba(255,140,50,0)');
+      x.fillStyle=hz;x.beginPath();x.arc(tx,Y,28,0,Math.PI*2);x.fill();}
 
-  if(progress>0.99){wctx.fillStyle='rgba(10,10,10,0.97)';wctx.fillRect(0,0,WELD_W,WELD_H);}
-  requestAnimationFrame(weldLoop);
+    drawBead(hot?tx:base+200);
+
+    if(hot){
+      // molten puddle
+      const pr=BW/2+0.8;
+      const pu=x.createRadialGradient(tx,ty,0,tx,ty,pr+2);
+      pu.addColorStop(0,'rgba(255,255,240,1)');pu.addColorStop(0.5,'rgba(255,220,150,0.95)');pu.addColorStop(1,'rgba(255,150,60,0)');
+      x.fillStyle=pu;x.beginPath();x.ellipse(tx,ty,pr*0.75,pr+1,0,0,Math.PI*2);x.fill();
+
+      // filler rod, dabbing into the leading edge each weave
+      const dab=(Math.sin(th)+1)/2;
+      const rx=tx+5+dab*2.5, ry=ty-1;
+      x.strokeStyle='#8d8f94';x.lineWidth=1.3;x.lineCap='round';
+      x.beginPath();x.moveTo(W+10,Y-46);x.lineTo(rx,ry);x.stroke();
+      x.fillStyle=`rgba(255,200,120,${0.5+0.5*(1-dab)})`;x.beginPath();x.arc(rx,ry,1,0,Math.PI*2);x.fill();
+
+      // arc light, flickering
+      const fl=0.85+Math.random()*0.15;
+      const ag=x.createRadialGradient(tx-1,ty-3,0,tx-1,ty-3,20*fl);
+      ag.addColorStop(0,'rgba(235,248,255,0.95)');ag.addColorStop(0.2,'rgba(150,205,255,0.55)');ag.addColorStop(1,'rgba(80,150,255,0)');
+      x.fillStyle=ag;x.beginPath();x.arc(tx-1,ty-3,20*fl,0,Math.PI*2);x.fill();
+
+      // torch: ceramic cup + tungsten, angled back
+      x.save();x.translate(tx-1,ty-4);x.rotate(-0.38);
+      x.fillStyle='#7a7a7a';x.fillRect(-1.1,-30,2.2,10);         // body
+      x.fillStyle='#c98a5a';x.beginPath();x.moveTo(-4.5,-21);x.lineTo(4.5,-21);x.lineTo(3,-9);x.lineTo(-3,-9);x.closePath();x.fill(); // cup
+      x.fillStyle='rgba(0,0,0,0.25)';x.fillRect(-4.5,-21,9,1.5);
+      x.strokeStyle='#ddd';x.lineWidth=0.9;x.beginPath();x.moveTo(0,-9);x.lineTo(0,-2.5);x.stroke(); // tungsten
+      x.restore();
+
+      // a few small TIG sparks
+      if(Math.random()<0.18)sparks.push({x:tx,y:ty,vx:(Math.random()-0.3)*1.8,vy:-(Math.random()*1.6+0.4),l:0,m:14+Math.random()*12});
+    }
+    sparks=sparks.filter(s=>s.l<s.m);
+    sparks.forEach(s=>{s.x+=s.vx;s.y+=s.vy;s.vy+=0.12;s.l++;x.fillStyle=`rgba(255,${190+Math.random()*60|0},90,${1-s.l/s.m})`;x.fillRect(s.x,s.y,0.8,0.8);});
+
+    if(state==='fade'){x.fillStyle=`rgba(10,10,10,${fade})`;x.fillRect(0,0,W,H);}
+    requestAnimationFrame(loop);
+  })();
 })();
 
 // Drone hover animation
