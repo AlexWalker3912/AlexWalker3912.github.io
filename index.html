@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alex Walker — Builder</title>
-<meta name="description" content="Stanford ME. TIG welder. Building toward something that hasn't been built before.">
+<meta name="description" content="Alex Walker. Mechanical engineering at Stanford. I weld, build drones for OCKO Navigation, and work on propulsion for Stanford DBF.">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -42,28 +42,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.5rem 2rem;display:
 .hero-name .alex{color:var(--text);display:block}
 .hero-name .arc-name{color:var(--arc);display:block;text-shadow:0 0 60px rgba(232,113,42,0.3)}
 .hero-sub{font-size:1rem;color:var(--muted);max-width:420px;line-height:1.7;opacity:0;animation:fadeUp 0.8s 0.7s forwards;font-weight:300}
-.hero-duality{position:absolute;right:2rem;top:50%;transform:translateY(-50%);font-family:'DM Mono',monospace;font-size:0.6rem;color:#1E1E1E;writing-mode:vertical-rl;letter-spacing:0.3em;text-transform:uppercase;opacity:0;animation:fadeIn 1.5s 1.2s forwards;transition:color 0.3s;user-select:none}
-.hero-duality:hover{color:var(--muted)}
 .hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;opacity:0;animation:fadeIn 2s 1.5s forwards;display:flex;flex-direction:column;align-items:center;gap:0.5rem}
 .scroll-line{width:1px;height:40px;background:linear-gradient(var(--arc),transparent)}
 
-/* DUALITY */
-.duality-hidden{margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);position:relative;z-index:1}
-.duality-side{padding:2.5rem 2rem;position:relative;overflow:hidden;background:var(--bg);transition:background 0.4s}
-.duality-side:hover{background:var(--surface)}
-.duality-side.left{border-right:none}
-.duality-label{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:1rem}
-.duality-side.left .duality-label{color:var(--alex)}
-.duality-side.right .duality-label{color:var(--arc)}
-.duality-word{font-family:'Bebas Neue',sans-serif;font-size:3rem;margin-bottom:0.75rem;line-height:1}
-.duality-side.left .duality-word{color:rgba(74,158,219,0.5)}
-.duality-side.right .duality-word{color:rgba(232,113,42,0.5)}
-.duality-desc{font-size:0.82rem;color:var(--muted);line-height:1.7;font-weight:300;max-width:320px}
-.duality-hover-reveal{position:absolute;bottom:1.5rem;right:1.5rem;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--border);letter-spacing:0.1em;transition:color 0.4s;pointer-events:none}
-.duality-side:hover .duality-hover-reveal{color:var(--muted)}
-.duality-quote{grid-column:1/-1;background:var(--bg);padding:2rem;border-top:1px solid var(--border);text-align:center}
-.duality-quote p{font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);font-style:italic;line-height:1.8;max-width:600px;margin:0 auto}
-.duality-quote p em{color:var(--arc);font-style:normal}
+/* INLINE LINKS */
+.hl{color:var(--text);text-decoration:none;border-bottom:1px solid rgba(232,113,42,0.5);transition:color 0.2s,border-color 0.2s}
+.hl:hover{color:var(--arc);border-color:var(--arc)}
+.title-link{color:inherit;text-decoration:none;transition:color 0.2s}
+.title-link:hover{color:var(--arc)}
+.title-link .arrow{font-size:0.55em;color:var(--arc);margin-left:0.35em;vertical-align:middle}
+.card-link{display:inline-block;margin-top:1.25rem;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--arc);text-decoration:none;letter-spacing:0.1em;border-bottom:1px solid rgba(232,113,42,0.3);padding-bottom:2px}
+.card-link:hover{border-color:var(--arc)}
 
 /* SECTIONS */
 section{padding:5rem 0;border-top:1px solid var(--border);position:relative;z-index:1}
@@ -82,22 +71,6 @@ section{padding:5rem 0;border-top:1px solid var(--border);position:relative;z-in
 .spec-item span{display:block;color:var(--muted);font-size:0.6rem;margin-top:3px}
 .weld-tags{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:1.5rem}
 .weld-tag{font-family:'DM Mono',monospace;font-size:0.6rem;padding:4px 12px;border:1px solid var(--border);color:var(--muted);letter-spacing:0.1em}
-
-/* GOALS */
-.goals-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
-.goal-card{background:var(--bg);padding:2rem;position:relative;overflow:hidden;transition:background 0.3s;min-height:220px;display:flex;flex-direction:column;justify-content:flex-end}
-.goal-card:hover{background:var(--surface)}
-.goal-num{font-family:'Bebas Neue',sans-serif;font-size:6rem;color:var(--border);position:absolute;top:-0.8rem;right:1rem;line-height:1;transition:color 0.3s;pointer-events:none}
-.goal-card:hover .goal-num{color:rgba(232,113,42,0.1)}
-.goal-label{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--arc);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.75rem}
-.goal-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;margin-bottom:0.5rem;color:var(--text);line-height:1.1}
-.goal-body{font-size:0.8rem;color:var(--muted);line-height:1.6;font-weight:300;flex:1;display:flex;align-items:flex-end;padding-bottom:0.5rem}
-.goal-status{display:inline-block;margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.6rem;padding:4px 12px;border:1px solid var(--border);color:var(--muted);letter-spacing:0.1em;width:fit-content}
-.goal-card.blank{border:1px dashed #1E1E1E;background:transparent;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer;transition:all 0.3s}
-.goal-card.blank:hover{background:rgba(232,113,42,0.02);border-color:rgba(232,113,42,0.25)}
-.blank-plus{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--border);margin-bottom:0.5rem;transition:color 0.3s;line-height:1}
-.goal-card.blank:hover .blank-plus{color:rgba(232,113,42,0.4)}
-.blank-label{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.15em;line-height:1.6}
 
 /* STANFORD */
 .stanford-bar{display:flex;align-items:flex-start;gap:2rem;padding:2rem;background:var(--surface);border:1px solid var(--border)}
@@ -129,7 +102,6 @@ section{padding:5rem 0;border-top:1px solid var(--border);position:relative;z-in
 .work-body p+p{margin-top:0.75rem}
 .work-tags{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:1.5rem}
 .work-tag{font-family:'DM Mono',monospace;font-size:0.6rem;padding:4px 12px;border:1px solid var(--border);color:var(--muted);letter-spacing:0.1em}
-.goal-card.wide{grid-column:1/-1;min-height:140px}
 .course-group{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;margin:2rem 0 0.75rem}
 
 /* FOOTER */
@@ -148,10 +120,8 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
 @media(max-width:640px){
   .weld-stage{flex-direction:column;gap:1.5rem}
   .weld-canvas-wrap{width:100%;height:140px}
-  .goals-grid{grid-template-columns:1fr}
   .work-grid{grid-template-columns:1fr}
   .stanford-courses{grid-template-columns:1fr 1fr}
-  .duality-hidden{grid-template-columns:1fr}
   nav{padding:1rem 1.5rem}
   .nav-links{gap:0.9rem}
   .nav-links a{font-size:0.6rem}
@@ -173,8 +143,8 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
   <a class="nav-logo" href="#">A<span>.</span>W</a>
   <div class="nav-links">
     <a href="#craft">Craft</a>
+    <a href="#builds">Builds</a>
     <a href="#work">Work</a>
-    <a href="#vision">Vision</a>
     <a href="#stanford">Stanford</a>
     <a href="https://www.linkedin.com/in/alex-walker-948a48370/" target="_blank" rel="noopener" class="nav-ext">LinkedIn ↗</a>
   </div>
@@ -183,12 +153,12 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
 <!-- HERO -->
 <div class="hero">
   <div class="container">
-    <p class="hero-eyebrow">Stanford ME · Builder · 2029</p>
+    <p class="hero-eyebrow">Stanford ME · Class of 2029</p>
     <h1 class="hero-name">
       <span class="alex">Alex</span>
       <span class="arc-name">Walker.</span>
     </h1>
-    <p class="hero-sub">Mechanical engineer in training. TIG welder by instinct. Drone builder. Propulsion on Stanford DBF. Building toward something that hasn't been built before.</p>
+    <p class="hero-sub">I'm a mechanical engineering student at Stanford, focused on aero/astro. I <a class="hl" href="#builds">TIG weld</a>, build <a class="hl" href="https://www.ockonavigation.com" target="_blank" rel="noopener">drones for OCKO Navigation</a>, and work on <a class="hl" href="https://flightclub.groups.stanford.edu/design-build-fly-dbf" target="_blank" rel="noopener">propulsion for Stanford DBF</a>.</p>
   </div>
   <div class="hero-scroll">
     <div class="scroll-line"></div>
@@ -206,8 +176,8 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
         <canvas id="weld-canvas" width="220" height="130"></canvas>
       </div>
       <div class="weld-info">
-        <div class="weld-title">TIG Welding</div>
-        <div class="weld-body">Tungsten inert gas. The most precise form of arc welding — no room for error, no hiding behind flux. The arc either holds or it doesn't. Learned at Stanford's Product Realization Lab with 304 stainless steel.</div>
+        <div class="weld-title"><a class="title-link" href="#builds">TIG Welding<span class="arrow">↓</span></a></div>
+        <div class="weld-body">I learned to TIG weld in Stanford's Product Realization Lab, mostly on 304 stainless, and I MIG weld too. Most of my projects start in Fusion 360 and end up on the welding table.</div>
         <div class="weld-spec">
           <div class="spec-item">304 SS / Mild<span>Materials</span></div>
           <div class="spec-item">GTAW<span>Process</span></div>
@@ -220,6 +190,7 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
           <span class="weld-tag">Structural Analysis</span>
           <span class="weld-tag">DXF / Laser Cut</span>
         </div>
+        <a class="card-link" href="#builds">See what I've built ↓</a>
       </div>
     </div>
 
@@ -228,8 +199,8 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
         <canvas id="drone-canvas" width="220" height="130"></canvas>
       </div>
       <div class="weld-info">
-        <div class="weld-title">Drones</div>
-        <div class="weld-body">Airframes built from bare parts: frame, motors, ESCs, power, flight electronics, and the mounts that hold it all together. Built as test platforms for navigation hardware that has to work when GPS doesn't.</div>
+        <div class="weld-title"><a class="title-link" href="https://www.ockonavigation.com" target="_blank" rel="noopener">Drones<span class="arrow">↗</span></a></div>
+        <div class="weld-body">I build drones from parts: frame, motors, ESCs, wiring, and printed mounts. They're test platforms for OCKO Navigation's SR10 module, which lets a drone navigate without GPS.</div>
         <div class="weld-spec">
           <div class="spec-item">Multirotor<span>Platform</span></div>
           <div class="spec-item">GPS-Denied<span>Mission</span></div>
@@ -241,6 +212,7 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
           <span class="weld-tag">3D Printing</span>
           <span class="weld-tag">Integration</span>
         </div>
+        <a class="card-link" href="https://www.ockonavigation.com" target="_blank" rel="noopener">ockonavigation.com ↗</a>
       </div>
     </div>
 
@@ -249,8 +221,8 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
         <canvas id="prop-canvas" width="220" height="130"></canvas>
       </div>
       <div class="weld-info">
-        <div class="weld-title">Propulsion</div>
-        <div class="weld-body">Electric powertrains for aircraft that have to fly a mission, not just fly. Motor, prop, and battery matched against thrust, endurance, and every gram of the weight budget.</div>
+        <div class="weld-title"><a class="title-link" href="https://flightclub.groups.stanford.edu/design-build-fly-dbf" target="_blank" rel="noopener">Propulsion<span class="arrow">↗</span></a></div>
+        <div class="weld-body">On Stanford DBF I work on propulsion: picking the motor, prop, and battery, running thrust tests, and keeping all of it inside the weight budget.</div>
         <div class="weld-spec">
           <div class="spec-item">Electric<span>Powertrain</span></div>
           <div class="spec-item">Thrust Stand<span>Testing</span></div>
@@ -261,6 +233,41 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
           <span class="weld-tag">Battery Sizing</span>
           <span class="weld-tag">Weight Budget</span>
         </div>
+        <a class="card-link" href="https://flightclub.groups.stanford.edu/design-build-fly-dbf" target="_blank" rel="noopener">Stanford DBF ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUILDS -->
+<section id="builds">
+  <div class="container">
+    <div class="section-label">Builds</div>
+  </div>
+  <div class="work-grid">
+    <div class="work-card arc">
+      <div class="work-org">Personal · Stainless</div>
+      <div class="work-title">Palm Tree Sculpture</div>
+      <div class="work-role">Fusion 360 · Fabrication</div>
+      <div class="work-body">
+        <p>A palm tree in stainless steel. I designed it in Fusion 360, wrote a script to help generate the parts, and fabricated it myself.</p>
+      </div>
+      <div class="work-tags">
+        <span class="work-tag">304 SS</span>
+        <span class="work-tag">TIG</span>
+        <span class="work-tag">DXF / STL</span>
+      </div>
+    </div>
+    <div class="work-card arc">
+      <div class="work-org">Personal · With Friends</div>
+      <div class="work-title">The Car</div>
+      <div class="work-role">Welding · Mechanical</div>
+      <div class="work-body">
+        <p>I did the welding on a car, then a few friends and I got it running and drivable.</p>
+      </div>
+      <div class="work-tags">
+        <span class="work-tag">MIG / TIG</span>
+        <span class="work-tag">Automotive</span>
       </div>
     </div>
   </div>
@@ -273,12 +280,12 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
   </div>
   <div class="work-grid">
     <div class="work-card arc">
-      <div class="work-org">OCKO Navigation</div>
+      <div class="work-org"><a class="title-link" href="https://www.ockonavigation.com" target="_blank" rel="noopener">OCKO Navigation ↗</a></div>
       <div class="work-title">Drone Builder</div>
       <div class="work-role">Hardware Integration · Contract</div>
       <div class="work-body">
-        <p>Built drones from the ground up for OCKO Navigation, a startup making navigation hardware for environments where GPS can't be trusted &mdash; jammed, spoofed, or simply not there.</p>
-        <p>Each airframe is a test platform for OCKO's SR10 navigation module, so the build has to be right: clean power, clean wiring, and a payload mount that keeps the sensor rigid and isolated. Built in my own garage: assembled, soldered, printed, and debugged every one myself.</p>
+        <p>OCKO is a Seattle startup building navigation for drones that works when GPS is jammed or gone.</p>
+        <p>I build the drones they test their SR10 module on. I put them together in my garage and do the soldering, wiring, 3D-printed mounts, and debugging myself.</p>
       </div>
       <div class="work-tags">
         <span class="work-tag">GPS-Denied Nav</span>
@@ -288,45 +295,18 @@ footer{padding:4rem 2rem;border-top:1px solid var(--border);display:flex;justify
       </div>
     </div>
     <div class="work-card alex">
-      <div class="work-org">Stanford DBF · Flight Club</div>
+      <div class="work-org"><a class="title-link" href="https://flightclub.groups.stanford.edu/design-build-fly-dbf" target="_blank" rel="noopener">Stanford DBF · Flight Club ↗</a></div>
       <div class="work-title">Propulsion</div>
-      <div class="work-role">Propulsion · Second-in-Command</div>
+      <div class="work-role">Propulsion · Second under the lead</div>
       <div class="work-body">
-        <p>Stanford's Design/Build/Fly team designs, builds, and flies a new electric RC aircraft every year for the AIAA DBF competition, built around that year's mission.</p>
-        <p>Working directly under the propulsion lead: motor, propeller, and battery selection, thrust testing, and making sure the powertrain hits the mission's numbers without blowing the weight budget.</p>
+        <p>Every year the team designs and builds a new electric RC plane for the AIAA Design/Build/Fly competition.</p>
+        <p>I work right under the propulsion lead on motor, prop, and battery selection and thrust testing.</p>
       </div>
       <div class="work-tags">
         <span class="work-tag">Electric Propulsion</span>
         <span class="work-tag">Thrust Testing</span>
         <span class="work-tag">AIAA DBF</span>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- VISION -->
-<section id="vision">
-  <div class="container">
-    <div class="section-label">Vision / 2029</div>
-  </div>
-  <div class="goals-grid">
-    <div class="goal-card">
-      <div class="goal-num">01</div>
-      <div class="goal-label">Endgame</div>
-      <div class="goal-title">Hydrogen Hypercar</div>
-      <div class="goal-body">First hydrogen-powered hypercar. PEM fuel cell architecture. Zero compromise on performance. The car that proves clean energy doesn't mean slow.</div>
-      <div class="goal-status">Target · 2029</div>
-    </div>
-    <div class="goal-card">
-      <div class="goal-num">02</div>
-      <div class="goal-label">Degree</div>
-      <div class="goal-title">ME · Aerospace Focus</div>
-      <div class="goal-body">Stanford Mechanical Engineering with an Aerospace and Astronautics emphasis. The foundation everything else is built on.</div>
-      <div class="goal-status">In Progress · Class of 2029</div>
-    </div>
-    <div class="goal-card blank wide">
-      <div class="blank-plus">+</div>
-      <div class="blank-label">Next thing<br>Unknown · TBD</div>
     </div>
   </div>
 </section>
